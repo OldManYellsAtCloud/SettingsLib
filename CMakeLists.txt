@@ -11,3 +11,10 @@ add_library(SettingsLib SHARED
 )
 
 target_compile_definitions(SettingsLib PRIVATE SETTINGSLIB_LIBRARY)
+
+include(GNUInstallDirs)
+install(TARGETS SettingsLib
+    BUNDLE DESTINATION .
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+)
