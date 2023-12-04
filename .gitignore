@@ -1,0 +1,6 @@
+CMakeLists.txt.user
+Makefile
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+libSettingsLib.so
