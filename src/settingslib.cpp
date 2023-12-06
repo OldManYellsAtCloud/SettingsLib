@@ -62,7 +62,7 @@ void addConfig(const std::string& line, const std::string& sect, std::map<std::s
     std::string key, val;
     size_t equalSignIndex = line.find_first_of('=');
     key = line.substr(0, equalSignIndex);
-    val = line.substr(equalSignIndex);
+    val = line.substr(equalSignIndex + 1);
 
     std::cout << "Adding config to section " << sect <<
         "key: " << key << ", val: " << val << std::endl;
