@@ -35,11 +35,14 @@ bool isSectionHeader(const std::string& line){
 }
 
 std::string getSectionName(const std::string& line){
+    std::cout << "Section line: " << line << std::endl;
     std::regex sectionRegex {SECTION_REGEX};
     std::smatch matches;
     std::regex_search(line, matches, sectionRegex);
-    if (matches.ready())
+    if (matches.ready()) {
+        std::cout << "Returining section: " << matches[1];
         return matches[1];
+    }
     return "";
 }
 
@@ -61,10 +64,14 @@ void addConfig(const std::string& line, const std::string& sect, std::map<std::s
     key = line.substr(0, equalSignIndex);
     val = line.substr(equalSignIndex);
 
+    std::cout << "Adding config to section " << sect <<
+        "key: " << key << ", val: " << val << std::endl;
+
     s[sect][key] = val;
 }
 
 std::map<std::string, configs> parseSettingsFile(std::string path){
+    std::cout << "Parsing config file " << path << std::endl;
     std::ifstream configFile {path};
     std::string line;
 
@@ -72,15 +79,21 @@ std::map<std::string, configs> parseSettingsFile(std::string path){
     std::string section_name;
 
     while (configFile >> line){
-        if (isComment(line) || isEmpty(line))
+        std::cout << "line: " << line << std::endl;
+        if (isComment(line) || isEmpty(line)){
+            std::cout << "it is empty" << std::endl;
             continue;
+        }
 
         if (isSectionHeader(line)){
+            std::cout << "it is section header" << std::endl;
             section_name = getSectionName(line);
+            std::cout << "section name: " << section_name;
             continue;
         }
 
         if (isConfig(line)){
+            std::cout << "it is config" << std::endl;
             addConfig(line, section_name, ret);
         }
     }
@@ -120,13 +133,13 @@ std::string SettingsLib::getValue(const std::string &section, const std::string 
 {
     auto sectionIt = settings.find(section);
     if (sectionIt == settings.end()) {
-        std::cerr << "Section " << section << " does not exist.";
+        std::cerr << "Section " << section << " does not exist." << std::endl;
         return "";
     }
 
     auto configIt = sectionIt->second.find(key);
     if (configIt == sectionIt->second.end()) {
-        std::cerr << "Key " << key << " does not exist.";
+        std::cerr << "Key " << key << " does not exist." << std::endl;
         return "";
     }
 
