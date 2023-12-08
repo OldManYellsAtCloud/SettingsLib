@@ -1,9 +1,10 @@
-#include "settingslib.h"
 #include <iostream>
 #include <filesystem>
 #include <fstream>
-#include <format>
 #include <regex>
+
+#include "settingslib.h"
+#include <loglibrary.h>
 
 #define  SELF_NAME_FILE  "/proc/self/comm"
 #define  COMMENT_CHARACTER  ';'
@@ -12,7 +13,7 @@
 void SettingsLib::getApplicationName(){
     std::ifstream(SELF_NAME_FILE) >> appName;
     if (appName.empty()){
-        std::cerr << "Could not determine application name!" << std::endl;
+        ERROR("Could not determine application name!");
         exit(1);
     }
 }
@@ -35,12 +36,10 @@ bool isSectionHeader(const std::string& line){
 }
 
 std::string getSectionName(const std::string& line){
-    std::cout << "Section line: " << line << std::endl;
     std::regex sectionRegex {SECTION_REGEX};
     std::smatch matches;
     std::regex_search(line, matches, sectionRegex);
     if (matches.ready()) {
-        std::cout << "Returining section: " << matches[1];
         return matches[1];
     }
     return "";
@@ -56,7 +55,7 @@ bool isConfig(const std::string& line){
 void addConfig(const std::string& line, const std::string& sect, std::map<std::string, configs>& s)
 {
     if (isEmpty(sect)){
-        std::cerr << "Section header is empty!" << std::endl;
+        ERROR("Section header is empty!");
     }
 
     std::string key, val;
@@ -64,14 +63,10 @@ void addConfig(const std::string& line, const std::string& sect, std::map<std::s
     key = line.substr(0, equalSignIndex);
     val = line.substr(equalSignIndex + 1);
 
-    std::cout << "Adding config to section " << sect <<
-        "key: " << key << ", val: " << val << std::endl;
-
     s[sect][key] = val;
 }
 
 std::map<std::string, configs> parseSettingsFile(std::string path){
-    std::cout << "Parsing config file " << path << std::endl;
     std::ifstream configFile {path};
     std::string line;
 
@@ -79,21 +74,19 @@ std::map<std::string, configs> parseSettingsFile(std::string path){
     std::string section_name;
 
     while (configFile >> line){
-        std::cout << "line: " << line << std::endl;
         if (isComment(line) || isEmpty(line)){
-            std::cout << "it is empty" << std::endl;
+            DEBUG("Line '{}' is comment or empty", line);
             continue;
         }
 
         if (isSectionHeader(line)){
-            std::cout << "it is section header" << std::endl;
             section_name = getSectionName(line);
-            std::cout << "section name: " << section_name;
+            DEBUG("Section name is {}", section_name);
             continue;
         }
 
         if (isConfig(line)){
-            std::cout << "it is config" << std::endl;
+            DEBUG("Line '{}' is config", line);
             addConfig(line, section_name, ret);
         }
     }
@@ -105,7 +98,7 @@ std::map<std::string, configs> parseSettingsFile(std::string path){
 void SettingsLib::parseSettings(){
     std::string path = std::format("{}/{}.cfg", configFolderPath, appName);
     if (!std::filesystem::exists(path)) {
-        std::cerr << std::format("{} config does not exist!", path) << std::endl;
+        ERROR("{} config does not exist!", path);
         return;
     }
 
@@ -133,13 +126,13 @@ std::string SettingsLib::getValue(const std::string &section, const std::string 
 {
     auto sectionIt = settings.find(section);
     if (sectionIt == settings.end()) {
-        std::cerr << "Section " << section << " does not exist." << std::endl;
+        ERROR("Section '{}' does not exist.", section);
         return "";
     }
 
     auto configIt = sectionIt->second.find(key);
     if (configIt == sectionIt->second.end()) {
-        std::cerr << "Key " << key << " does not exist." << std::endl;
+        ERROR("Key '{}' does not exist", key);
         return "";
     }
 

@@ -6,8 +6,6 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 
-
-
 add_library(SettingsLib SHARED
   src/settingslib.cpp
   include/settingslib.h
@@ -29,6 +27,8 @@ install(TARGETS SettingsLib
     PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
 
+target_link_libraries(SettingsLib LogLibrary)
+
 option(RUN_TESTS "Compile and run tests" OFF)
 
 if (RUN_TESTS)
@@ -49,6 +49,7 @@ enable_testing()
 add_executable(settings_test tests/settings_test.cpp)
 target_link_libraries(settings_test
                       GTest::gtest_main
+                      LogLibrary
                       SettingsLib)
 include(GoogleTest)
 gtest_discover_tests(settings_test)
