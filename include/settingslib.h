@@ -3,6 +3,7 @@
 
 #include <string>
 #include <map>
+#include <vector>
 
 typedef std::map<std::string, std::string> configs;
 
@@ -22,6 +23,7 @@ public:
     ~SettingsLib() = default;
 
     std::string getValue(const std::string& section, const std::string& key);
+    std::vector<std::string> getSections();
 };
 
 #endif // SETTINGSLIB_H

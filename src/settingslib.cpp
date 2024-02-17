@@ -138,3 +138,11 @@ std::string SettingsLib::getValue(const std::string &section, const std::string 
 
     return settings[section][key];
 }
+
+std::vector<std::string> SettingsLib::getSections()
+{
+    std::vector<std::string> ret;
+    for (auto it = settings.begin(); it != settings.end(); ++it)
+        ret.push_back(it->first);
+    return ret;
+}
