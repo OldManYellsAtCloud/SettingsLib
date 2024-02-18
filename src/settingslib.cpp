@@ -73,7 +73,7 @@ std::map<std::string, configs> parseSettingsFile(std::string path){
     std::map<std::string, configs> ret;
     std::string section_name;
 
-    while (configFile >> line){
+    for(;std::getline(configFile, line);){
         if (isComment(line) || isEmpty(line)){
             DEBUG("Line '{}' is comment or empty", line);
             continue;
