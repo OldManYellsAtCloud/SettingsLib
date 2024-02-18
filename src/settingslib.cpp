@@ -18,6 +18,33 @@ void SettingsLib::getApplicationName(){
     }
 }
 
+std::string trimLeft(std::string s)
+{
+    if (!s.length())
+        return s;
+
+    if (std::isblank(s[0]))
+        return trimLeft(s.substr(1));
+
+    return s;
+}
+
+std::string trimRight(std::string s)
+{
+    if (!s.length())
+        return s;
+
+    if (std::isblank(s[s.length() - 1]))
+        return trimRight(s.substr(0, s.length() - 1));
+
+    return s;
+}
+
+std::string trim(std::string s)
+{
+    return trimLeft(trimRight(s));
+}
+
 bool isComment(const std::string& line){
     return line.starts_with(COMMENT_CHARACTER);
 }
@@ -74,6 +101,7 @@ std::map<std::string, configs> parseSettingsFile(std::string path){
     std::string section_name;
 
     for(;std::getline(configFile, line);){
+        line = trim(line);
         if (isComment(line) || isEmpty(line)){
             DEBUG("Line '{}' is comment or empty", line);
             continue;
