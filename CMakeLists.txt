@@ -27,6 +27,17 @@ install(TARGETS SettingsLib
     PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
 
+
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+        "SettingsLibConfig.cmake"
+        VERSION 1.0
+        COMPATIBILITY AnyNewerVersion)
+
+
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/SettingsLibConfig.cmake"
+        DESTINATION lib/cmake/SettingsLib)
+
 target_link_libraries(SettingsLib LogLibrary)
 
 option(RUN_TESTS "Compile and run tests" OFF)
