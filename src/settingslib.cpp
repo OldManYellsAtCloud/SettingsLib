@@ -103,18 +103,18 @@ std::map<std::string, configs> parseSettingsFile(std::string path){
     for(;std::getline(configFile, line);){
         line = trim(line);
         if (isComment(line) || isEmpty(line)){
-            DEBUG("Line '{}' is comment or empty", line);
+            DBG("Line '{}' is comment or empty", line);
             continue;
         }
 
         if (isSectionHeader(line)){
             section_name = getSectionName(line);
-            DEBUG("Section name is {}", section_name);
+            DBG("Section name is {}", section_name);
             continue;
         }
 
         if (isConfig(line)){
-            DEBUG("Line '{}' is config", line);
+            DBG("Line '{}' is config", line);
             addConfig(line, section_name, ret);
         }
     }
