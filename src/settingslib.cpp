@@ -167,6 +167,15 @@ std::string SettingsLib::getValue(const std::string &section, const std::string 
     return settings[section][key];
 }
 
+std::string SettingsLib::getMandatoryValue(const std::string &section, const std::string &key)
+{
+    std::string ret = getValue(section, key);
+    if (ret.empty()){
+        throw std::runtime_error("Missing property in config file");
+    }
+    return ret;
+}
+
 std::vector<std::string> SettingsLib::getSections()
 {
     std::vector<std::string> ret;

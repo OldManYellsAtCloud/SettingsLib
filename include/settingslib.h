@@ -23,6 +23,7 @@ public:
     ~SettingsLib() = default;
 
     std::string getValue(const std::string& section, const std::string& key);
+    std::string getMandatoryValue(const std::string& section, const std::string& key);
     std::vector<std::string> getSections();
 };
 
