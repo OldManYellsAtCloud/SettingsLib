@@ -1,4 +1,4 @@
-#include <iostream>
+#include <ranges>
 #include <filesystem>
 #include <fstream>
 #include <regex>
@@ -178,8 +178,7 @@ std::string SettingsLib::getMandatoryValue(const std::string &section, const std
 
 std::vector<std::string> SettingsLib::getSections()
 {
-    std::vector<std::string> ret;
-    for (auto it = settings.begin(); it != settings.end(); ++it)
-        ret.push_back(it->first);
+    auto keys = std::views::keys(settings);
+    std::vector<std::string> ret{keys.begin(), keys.end()};
     return ret;
 }
