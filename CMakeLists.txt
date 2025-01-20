@@ -5,6 +5,7 @@ project(SettingsLib LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+find_package(loglib REQUIRED)
 
 add_library(SettingsLib SHARED
   src/settingslib.cpp
@@ -38,7 +39,7 @@ write_basic_package_version_file(
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/SettingsLibConfig.cmake"
         DESTINATION lib/cmake/SettingsLib)
 
-target_link_libraries(SettingsLib LogLibrary)
+target_link_libraries(SettingsLib loglib)
 
 option(RUN_TESTS "Compile and run tests" OFF)
 
@@ -60,7 +61,7 @@ enable_testing()
 add_executable(settings_test tests/settings_test.cpp)
 target_link_libraries(settings_test
                       GTest::gtest_main
-                      LogLibrary
+                      loglib
                       SettingsLib)
 include(GoogleTest)
 gtest_discover_tests(settings_test)

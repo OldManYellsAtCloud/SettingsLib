@@ -4,7 +4,7 @@
 #include <regex>
 
 #include "settingslib.h"
-#include <loglibrary.h>
+#include <loglib/loglib.h>
 
 #define  SELF_NAME_FILE  "/proc/self/comm"
 #define  COMMENT_CHARACTER  ';'
@@ -13,7 +13,7 @@
 void SettingsLib::getApplicationName(){
     std::ifstream(SELF_NAME_FILE) >> appName;
     if (appName.empty()){
-        ERROR("Could not determine application name!");
+        LOG_ERROR("Could not determine application name!");
         exit(1);
     }
 }
@@ -82,7 +82,7 @@ bool isConfig(const std::string& line){
 void addConfig(const std::string& line, const std::string& sect, std::map<std::string, configs>& s)
 {
     if (isEmpty(sect)){
-        ERROR("Section header is empty!");
+        LOG_ERROR("Section header is empty!");
     }
 
     std::string key, val;
@@ -103,18 +103,18 @@ std::map<std::string, configs> parseSettingsFile(std::string path){
     for(;std::getline(configFile, line);){
         line = trim(line);
         if (isComment(line) || isEmpty(line)){
-            DBG("Line '{}' is comment or empty", line);
+            LOG_DEBUG_F("Line '{}' is comment or empty", line);
             continue;
         }
 
         if (isSectionHeader(line)){
             section_name = getSectionName(line);
-            DBG("Section name is {}", section_name);
+            LOG_DEBUG_F("Section name is {}", section_name);
             continue;
         }
 
         if (isConfig(line)){
-            DBG("Line '{}' is config", line);
+            LOG_DEBUG_F("Line '{}' is config", line);
             addConfig(line, section_name, ret);
         }
     }
@@ -126,7 +126,7 @@ std::map<std::string, configs> parseSettingsFile(std::string path){
 void SettingsLib::parseSettings(){
     std::string path = std::format("{}/{}.cfg", configFolderPath, appName);
     if (!std::filesystem::exists(path)) {
-        ERROR("{} config does not exist!", path);
+        LOG_ERROR_F("{} config does not exist!", path);
         return;
     }
 
@@ -154,13 +154,13 @@ std::string SettingsLib::getValue(const std::string &section, const std::string 
 {
     auto sectionIt = settings.find(section);
     if (sectionIt == settings.end()) {
-        ERROR("Section '{}' does not exist.", section);
+        LOG_ERROR_F("Section '{}' does not exist.", section);
         return "";
     }
 
     auto configIt = sectionIt->second.find(key);
     if (configIt == sectionIt->second.end()) {
-        ERROR("Key '{}' does not exist", key);
+        LOG_ERROR_F("Key '{}' does not exist", key);
         return "";
     }
 
