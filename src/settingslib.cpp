@@ -2,6 +2,7 @@
 #include <filesystem>
 #include <fstream>
 #include <regex>
+#include <csignal>
 
 #include "settingslib.h"
 #include <loglib/loglib.h>
@@ -123,20 +124,22 @@ std::map<std::string, configs> parseSettingsFile(std::string path){
     return ret;
 }
 
-void SettingsLib::parseSettings(){
-    std::string path = std::format("{}/{}.cfg", configFolderPath, appName);
+void SettingsLib::parseSettings(int optionalSignal){
+    std::string path = std::format("{}/{}.cfg", me->configFolderPath, me->appName);
     if (!std::filesystem::exists(path)) {
         LOG_ERROR_F("{} config does not exist!", path);
         return;
     }
 
-    settings = parseSettingsFile(path);
+    me->settings = parseSettingsFile(path);
 }
 
 SettingsLib::SettingsLib()
 {
+    me = this;
     getApplicationName();
     parseSettings();
+    std::signal(SIGUSR2, SettingsLib::parseSettings);
 }
 
 SettingsLib::SettingsLib(std::string path): configFolderPath {path}

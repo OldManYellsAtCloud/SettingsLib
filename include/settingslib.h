@@ -13,8 +13,9 @@ private:
     std::string appName;
     std::string configFolderPath;
     std::map<std::string, configs> settings;
+    static SettingsLib *me;
 
-    void parseSettings();
+    static void parseSettings(int optionalSignal = 0);
     void getApplicationName();
 public:
     SettingsLib();
