@@ -88,8 +88,8 @@ void addConfig(const std::string& line, const std::string& sect, std::map<std::s
 
     std::string key, val;
     size_t equalSignIndex = line.find_first_of('=');
-    key = line.substr(0, equalSignIndex);
-    val = line.substr(equalSignIndex + 1);
+    key = trim(line.substr(0, equalSignIndex));
+    val = trim(line.substr(equalSignIndex + 1));
 
     s[sect][key] = val;
 }
